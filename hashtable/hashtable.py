@@ -11,6 +11,10 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
 
 class HashTable:
     """
@@ -20,8 +24,12 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
-        # Your code here
+    def __init__(self, capacity = MIN_CAPACITY):
+        self.capacity = capacity
+        #without linked list
+        # self.hash_table = [None] * capacity
+        #with linked list
+        self.hash_table = [LinkedList()] * capacity
 
 
     def get_num_slots(self):
@@ -35,6 +43,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.hash_table)
 
 
     def get_load_factor(self):
@@ -63,6 +72,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for letter in key:
+            hash = ((hash << 5) + hash) + ord(letter)
+        return hash & 0XFFFFFFFF
 
 
     def hash_index(self, key):
@@ -82,6 +95,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # put without linked list
+        # self.hash_table[self.hash_index(key)] = value
+        # put with linked list
+        # hash the key and get an index
+        node = HashTableEntry(key, value)
+        index = self.hash_index(key)
+
+        # find the start of the linked list using the index
+        linked_list = self.hash_table[index]
+        # Search through linked list
+        current_node = linked_list.head
+        # IF the key already exists in the linked list
+        while current_node is not None:
+            if current_node.key == key:
+                current_node.value == value:
+                return
+                # Replace the value
+            current_node = current_node.next
+        # Else
+        linked_list.head.next = linked_list.head
+        linked_list.head = node
+            # Add new HashTable Entry to the head of linked list
+​
+
+
 
 
     def delete(self, key):
@@ -93,6 +131,22 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        #without linked list
+        # return self.hash_table.pop(self.hash_index(key))
+        index = self.hash_index(key)
+        linked_list = self.hash_table[index]
+        prev_node = linked_list.head
+        if prev_node.key == key:
+            linked_list.head = prev_node.next
+            return prev_node.value
+        current_node = prev_node.next
+        while current_node is not None:
+            if current_node.key == key:
+                prev_node.next = current_node.next
+                return current_node.value
+            prev_node = current_node
+            current_node = current_node.next
+        print(f'Warning: Key named {key} does not exist!')
 
 
     def get(self, key):
@@ -104,6 +158,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # without linked list
+        # return self.hash_table[self.hash_index(key)]
+        # with linked list
+        index = self.hash_index(key)
+        linked_list = self.hash_table[index]
+        current_node = linked_list.head
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node.value
+            current_node = current_node.next
+        return None
 
 
     def resize(self, new_capacity):
