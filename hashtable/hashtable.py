@@ -53,6 +53,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        count = 0
+        for list in self.hash_table:
+            cur = list.head
+            while cur is not None:
+                count += 1
+                cur = cur.next
+        load_capacity = count / self.get_num_slots()
+        return load_capacity
 
 
     def fnv1(self, key):
@@ -109,15 +117,18 @@ class HashTable:
         # IF the key already exists in the linked list
         while current_node is not None:
             if current_node.key == key:
-                current_node.value == value:
+                current_node.value = value
                 return
                 # Replace the value
             current_node = current_node.next
         # Else
-        linked_list.head.next = linked_list.head
-        linked_list.head = node
+        if linked_list.head is None:
+            linked_list.head = node
+        else:
+            node.next = linked_list.head
+            linked_list.head = node
+        self.hash_table[index] = linked_list
             # Add new HashTable Entry to the head of linked list
-​
 
 
 
@@ -143,6 +154,7 @@ class HashTable:
         while current_node is not None:
             if current_node.key == key:
                 prev_node.next = current_node.next
+                self.hash_table[index] = linked_list
                 return current_node.value
             prev_node = current_node
             current_node = current_node.next
@@ -179,6 +191,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        old_hash_table = self.hash_table
+        self.capacity = new_capacity
+        for list in old_hash_table:
+            cur = list.head
+            while cur is not None:
+                self.put(cur.key, cur.value)
+
+
 
 
 
